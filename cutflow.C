@@ -4,7 +4,7 @@
 // .x cutflow.C("/fdata/scratch/mexanick/ttbar");
 
 #ifdef __CLING__
-//R__LOAD_LIBRARY(libDelphes);
+//R__LOAD_LIBRARY(libDelphes);  // May need to uncomment this line on Brazos, but it spells disaster on my laptop.
 #include "classes/DelphesClasses.h"
 #include "external/ExRootAnalysis/ExRootTreeReader.h"
 #include <TROOT.h>
@@ -92,9 +92,9 @@ void cutflow(const char *sample_directory = 0) {
     }
 
     // Initialize cuts.
-    bool PassMissingET=false;
-    bool PassHTLT=false;
-    bool PassMuJetMass=false;
+    bool PassMissingET = false;
+    bool PassHTLT = false;
+    bool PassMuJetMass = false;
 
     // Cut (1): Calculate max{M(mu,j)}.
     float Pm1_1 = ((mu1->P4()) + (b1->P4())).M();
