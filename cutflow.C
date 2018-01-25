@@ -4,7 +4,6 @@
 // .x cutflow.C("/fdata/scratch/mexanick/ttbar");
 
 #ifdef __CLING__
-//R__LOAD_LIBRARY(libDelphes);  // May need to uncomment this line on Brazos, but it spells disaster on my laptop.
 #include "classes/DelphesClasses.h"
 #include "external/ExRootAnalysis/ExRootTreeReader.h"
 #include <TROOT.h>
