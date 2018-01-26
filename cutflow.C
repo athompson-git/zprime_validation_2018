@@ -37,8 +37,12 @@ void cutflow(const char *sample_directory = 0) {
   TClonesArray *branchMuon = treeReader->UseBranch("Muon");
   TClonesArray *branchMPT = treeReader->UseBranch("MissingET");
 
+  // Book TProfiles and TEfficiencies.
+  TProfile *cutflow = new TProfile("cutflow","(2b & 2OS muons) & max(SBM)>170, MET<100, DHTLT<0;cut number;percent passing",4,-0.5,3.5);
+
   // Begin event loop.
   for (Int_t entry = 0; entry < numberOfEntries; ++entry) {
+    if (entry % 10000 == 0) printf("On event %d / %lld \n", entry, numberOfEntries);
     treeReader->ReadEntry(entry);
 
     vector<int> bPosition;
@@ -76,6 +80,7 @@ void cutflow(const char *sample_directory = 0) {
     }
 
     // Skip to the next event if preselection requirements are unmet.
+    cutflow->Fill(0, (OSMuons && (DiBottom || BottomJet)));
     if (!OSMuons) continue;
     if (!(DiBottom || BottomJet)) continue;
 
@@ -122,6 +127,23 @@ void cutflow(const char *sample_directory = 0) {
     float HTLT = (b1->PT) + (b2->PT) - (mu1->PT) - (mu2->PT);
     if (HTLT < 0) PassHTLT = true;
 
+    // Fill TProfiles.
+    cutflow->Fill(1, PassMuJetMass);
+    if (PassMuJetMass) {
+      cutflow->Fill(2, PassMissingET);
+      if (PassMissingET) {
+        cutflow->Fill(3, PassHTLT);
+      }
+    }
+
   } // End event loop.
+
+  // Print out efficiency information.
+  for (unsigned i=0; i<cutflow->GetNbinsX(); ++i) {
+    printf("%d: %f +/- %f \n" ,i,
+           cutflow->GetBinContent(i+1),
+           cutflow->GetBinError(i+1));
+  }
+  cutflow->Draw();
 
 }
